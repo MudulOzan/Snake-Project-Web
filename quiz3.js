@@ -18,15 +18,26 @@ window.addEventListener("load", function(event) {
     }
     this.stop = function(){
         this.sound.pause();
-    }    
+    }  
+    this.muted = function(){
+        this.sound.muted();
+    }   
+    this.loop = function(){
+        this.sound.loop();
+    }
+    
+    
   }
-  var myMusic;
-  var mySound;
+  var myMusic, mySound, fin, achievment1, achievment2;
   
   function startGame() {
+    achievment1 = new sound("sounds/achievment1.wav");
+    achievment2 = new sound("sounds/achievment2.wav");
     mySound = new sound("sounds/eat.wav");
     myMusic = new sound("sounds/game.mp3");
+    fin = new sound("sounds/gameover.wav");
     myMusic.play();
+    myMusic.loop();
   }
 
   startGame(); 
@@ -75,13 +86,12 @@ window.addEventListener("load", function(event) {
     var row = (Math.floor(Math.random() * (maxY - minY + 1)) + minY) * 10;
     var col = (Math.floor(Math.random() * (maxX - minX + 1)) + minX) * 10;
 
-    apple = document.createElement("DIV");
+    apple = document.createElement("IMG");
     apple.setAttribute("class", "snake");
     apple.style.width = "10px";
     apple.style.height = "10px";
     apple.style.position = "absolute";
-    apple.style.border = "1px solid black";
-    apple.style.backgroundColor = "red";
+    apple.src = "images/apple.png";
     apple.style.left = col + "px";
     apple.style.top = row + "px";
     mainDiv.appendChild(apple);
@@ -154,6 +164,9 @@ window.addEventListener("load", function(event) {
         button.disabled = false;
         button.style.opacity = 1;
         del = 1;
+        myMusic.muted();
+        myMusic.play();
+        fin.play();
       }
     }
     if (del == 1) {
@@ -216,6 +229,8 @@ window.addEventListener("load", function(event) {
       parts++;
       if (sound == 1) mySound.play();
       
+      if (SCORE == 100) achievment1.play();
+      else if (SCORE == 250) achievment2.play();
       var sc = document.getElementById("score").innerHTML = "Score: " + SCORE;
     }
   }
