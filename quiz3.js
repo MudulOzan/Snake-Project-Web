@@ -2,7 +2,35 @@
  * Known bugs:
  * Don't know why but sometimes it does not eat the apple.
  */
+
+
+
 window.addEventListener("load", function(event) {
+  function sound(src) {
+    this.sound = document.createElement("audio");
+    this.sound.src = src;
+    this.sound.setAttribute("preload", "auto");
+    this.sound.setAttribute("controls", "none");
+    this.sound.style.display = "none";
+    document.body.appendChild(this.sound);
+    this.play = function(){
+        this.sound.play();
+    }
+    this.stop = function(){
+        this.sound.pause();
+    }    
+  }
+  var myMusic;
+  var mySound;
+  
+  function startGame() {
+    mySound = new sound("sounds/eat.wav");
+    myMusic = new sound("sounds/game.mp3");
+    myMusic.play();
+  }
+
+  startGame(); 
+  
   var T = {}
   var mainDiv = document.getElementById("mainDiv");
   var coordLeft = 500;
@@ -14,17 +42,23 @@ window.addEventListener("load", function(event) {
   const UP=38;
   const RIGHT=39;
   const DOWN=40;
-  var SPEED = 200;
+  var SPEED = 150;
   var DIRECTION = 0;
   const minY = 1;
   const maxY = 60;
   const minX = 36;
   const maxX = 95;
+  var parts = 6;
   var SCORE = 0;
-  var fixTimer = setInterval(move, SPEED);
+  
+  function timer() {
+    setInterval(move, SPEED);
+  }
+  
   function doItForTheSnake() {
     for (var i = 0; i < 6; i++) {
       snake[i] = document.createElement("DIV");
+      snake[i].setAttribute("class", "snake");
       snake[i].style.position = "absolute";
       snake[i].style.border = "1px solid black";
       snake[i].style.backgroundColor = "black";
@@ -42,6 +76,7 @@ window.addEventListener("load", function(event) {
     var col = (Math.floor(Math.random() * (maxX - minX + 1)) + minX) * 10;
 
     apple = document.createElement("DIV");
+    apple.setAttribute("class", "snake");
     apple.style.width = "10px";
     apple.style.height = "10px";
     apple.style.position = "absolute";
@@ -60,7 +95,6 @@ window.addEventListener("load", function(event) {
       isLeft();
       followMyLead(coordLeft, coordTop);
       eatIt();
-      fixTimer;
       biteMySelf();
     }
     else if(DIRECTION == 1){
@@ -68,7 +102,6 @@ window.addEventListener("load", function(event) {
       isTop();
       followMyLead(coordLeft, coordTop);
       eatIt();
-      fixTimer;
       biteMySelf();
     }
     else if(DIRECTION == 2){
@@ -76,7 +109,6 @@ window.addEventListener("load", function(event) {
       isRight();
       followMyLead(coordLeft, coordTop);
       eatIt();
-      fixTimer;
       biteMySelf();
        
     }
@@ -85,7 +117,6 @@ window.addEventListener("load", function(event) {
       isBottom();
       followMyLead(coordLeft, coordTop);
       eatIt();
-      fixTimer;
       biteMySelf();
     }
   }
@@ -110,20 +141,33 @@ window.addEventListener("load", function(event) {
   
   });
   function biteMySelf() {
+    var del = 0;
     var snakeLeft = parseInt(snake[0].style.left) + "px";
     var snakeTop = parseInt(snake[0].style.top) + "px";
     for (var i = 1; i < snake.length; i++) {
       if (snakeLeft == snake[i].style.left && snakeTop == snake[i].style.top) {
-        clearInterval(fixTimer);
+        clearInterval(timer());
         var gameOver = document.getElementById("gameOver");
         var button = document.getElementById("start");
+        button.setAttribute("class", "button");
         gameOver.style.opacity = 1;
         button.disabled = false;
         button.style.opacity = 1;
+        del = 1;
       }
+    }
+    if (del == 1) {
+      deleteDivs();
     }
   } 
   
+  function deleteDivs() {
+    var mainDiv = document.getElementById("mainDiv");
+    for (var i = 0; i < parts; i++) {
+      mainDiv.removeChild(snake[i]);
+    }
+    mainDiv.removeChild(apple);
+  }
   function followMyLead(coordLeft, coordTop) {
     for (var i = snake.length-1; i > 1; i--) {
       snake[i].style.left = snake[i-1].style.left;
@@ -159,6 +203,7 @@ window.addEventListener("load", function(event) {
       mainDiv.removeChild(apple);
       createApple();
       snake.push(document.createElement("DIV"));
+      snake[snake.length-1].setAttribute("class", "apple");
       snake[snake.length-1].style.position = "absolute";
       snake[snake.length-1].style.border = "1px solid black";
       snake[snake.length-1].style.backgroundColor = "black";
@@ -168,6 +213,9 @@ window.addEventListener("load", function(event) {
       snake[snake.length-1].style.left = "-50px";
       snake[snake.length-1].style.top = "-50px";     
       SCORE += 10;
+      parts++;
+      if (sound == 1) mySound.play();
+      
       var sc = document.getElementById("score").innerHTML = "Score: " + SCORE;
     }
   }
@@ -177,9 +225,29 @@ window.addEventListener("load", function(event) {
   function disable() {
       var button = document.getElementById("start");
       button.disabled = true;
+      button.setAttribute("class", "none");
       button.style.opacity = 0;
       doItForTheSnake();
       createApple();
-      move();
+      timer();
+      mySound.play();
   }
+  
+  var sElement = document.getElementById("sound");
+  sElement.addEventListener("click", muteSound);
+  var mElement = document.getElementById("music");
+  mElement.addEventListener("click", muteMusic);
+  
+  var sound = 1;
+  var music = 1;
+  
+  function muteSound(){
+    if (sound == 1) { sound = 0; sElement.src = "images/mute.png"; }
+    else { sound = 1; sElement.src = "images/unmute.png";  }
+  }
+  function muteMusic() {
+    if (music == 1) { myMusic.stop(); music = 0; mElement.src = "images/mute.png";  }
+    else { myMusic.play(); music = 1; mElement.src = "images/unmute.png";  }
+  }
+
 });

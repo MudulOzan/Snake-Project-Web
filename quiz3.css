@@ -6,9 +6,41 @@
   margin-top: 8px;
 }
 
-#score {
+#soundSp {
+  position: absolute;
+  top: 20px;
+  left: 1120px;
+}
+
+#musicSp {
+  position: absolute;
+  top: 20px;
+  left: 1212px;
+}
+
+#sound {
   position: absolute;
   top: 10px;
+  left: 1080px;
+}
+
+#music {
+  position: absolute;
+  top: 10px;
+  left: 1172px;
+}
+.mute {
+  height: 32px; 
+  width: 32px;
+  border-radius: 10px;
+  border: 2px solid black;
+  background-image:url('images/unmute.png');
+  background-repeat: round;
+}
+
+#score {
+  position: absolute;
+  top: 20px;
   left: 1000px;
 }
 
@@ -37,8 +69,28 @@
   transition: all 0.5s;
   cursor: pointer;
   margin: 5px;
+    
+  -webkit-animation: fadeinout 4s linear infinite;
+  animation: fadeinout 4s linear infinite;
 }
 
+.none {
+  display: inline-block;
+  position: absolute;
+  top: 330px;
+  left: 580px;
+  border-radius: 4px;
+  background-color: #007700;
+  border: none;
+  color: #FFFFFF;
+  text-align: center;
+  font-size: 28px;
+  padding: 10px;
+  width: 150px;
+  transition: all 0.5s;
+  cursor: pointer;
+  margin: 5px;
+}
 .button span {
   cursor: pointer;
   display: inline-block;
@@ -62,4 +114,18 @@
 .button:hover span:after {
   opacity: 1;
   right: 0;
+}
+
+.elementToFadeInAndOut {
+
+}
+
+@-webkit-keyframes fadeinout {
+  0%,100% { opacity: 0; }
+  50% { opacity: 1; }
+}
+
+@keyframes fadeinout {
+  0%,100% { opacity: 0; }
+  50% { opacity: 1; }
 }
